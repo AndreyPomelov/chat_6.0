@@ -1,6 +1,7 @@
 package server;
 
 import server.authentication.AuthService;
+import server.exceptions.RegistrationFailedException;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -109,6 +110,27 @@ public class ClientManager extends Thread {
                     OUT.writeUTF(String.format("%s %s", AUTH_OK, nickname));
                     break;
                 }
+            }
+
+            // Обработка запроса на регистрацию нового пользователя.
+            if (message.startsWith(REG)) {
+                String[] messageParts = message.split(" ");
+                String login = messageParts[1];
+                String password = messageParts[2];
+                String nicknameForReg = messageParts[3];
+
+                try {
+                    AUTH_SERVICE.registerNewUser(login, password, nicknameForReg);
+                } catch (RegistrationFailedException e) {
+
+                    // Если попали сюда, значит произошла ошибка при добавлении нового пользователя в базу данных.
+                    // Такое может произойти, если пользователь ввёл логин или пароль, которые уже существуют в базе данных.
+                    // В таком случае отправляем на клиентскую часть сообщение о неуспешной регистрации.
+                    OUT.writeUTF(REG_FAIL);
+                    continue;
+                }
+
+                OUT.writeUTF(REG_OK);
             }
         }
 

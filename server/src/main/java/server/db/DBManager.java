@@ -1,9 +1,8 @@
 package server.db;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.Statement;
+import server.exceptions.RegistrationFailedException;
+
+import java.sql.*;
 
 import static constants.Constants.DB_ADDRESS;
 
@@ -75,5 +74,22 @@ public class DBManager {
         // что пользователь ввёл несуществующий логин или ошибся в пароле.
         // В таком случае возвращаем null.
         return nickname;
+    }
+
+    /**
+     * Добавляет нового пользователя в базу данных.
+     *
+     * @param login                         логин.
+     * @param password                      пароль.
+     * @param nickname                      никнейм.
+     * @throws RegistrationFailedException  ошибка регистрации нового пользователя.
+     */
+    public static void addNewUser(String login, String password, String nickname) throws RegistrationFailedException {
+        try {
+            statement.execute(String.format("INSERT INTO `user` (`login`, `password`, `nickname`) " +
+                    "VALUES ('%s', '%s', '%s');", login, password, nickname));
+        } catch (SQLException e) {
+            throw new RegistrationFailedException("Такой логин или никнейм уже существует.");
+        }
     }
 }

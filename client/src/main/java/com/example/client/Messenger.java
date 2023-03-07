@@ -100,6 +100,16 @@ public class Messenger extends Thread {
             if (message.equals(AUTH_DENIED)) {
                 controller.addMessage("Неверный логин или пароль.");
             }
+
+            // Регистрация успешна.
+            if (message.equals(REG_OK)) {
+                controller.addMessage("Регистрация успешна. Пожалуйста, выполните вход под новым логином.");
+            }
+
+            // Регистрация неуспешна.
+            if (message.equals(REG_FAIL)) {
+                controller.addMessage("Такой логин или никнейм уже существуют.");
+            }
         }
     }
 
@@ -141,5 +151,17 @@ public class Messenger extends Thread {
      */
     public void sendMessage(String message) throws IOException {
         out.writeUTF(message);
+    }
+
+    /**
+     * Попытка регистрации нового пользователя.
+     *
+     * @param login         логин.
+     * @param password      пароль.
+     * @param nickname      никнейм.
+     * @throws IOException  ошибка ввода-вывода.
+     */
+    public void tryToRegister(String login, String password, String nickname) throws IOException {
+        out.writeUTF(String.format("%s %s %s %s", REG, login, password, nickname));
     }
 }

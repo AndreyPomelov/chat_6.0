@@ -55,6 +55,30 @@ public class ChatController implements Initializable {
     public HBox messageForm;
 
     /**
+     * Форма регистрации нового пользователя.
+     */
+    @FXML
+    public HBox registerForm;
+
+    /**
+     * Поле для ввода логина при регистрации.
+     */
+    @FXML
+    public TextField loginForRegistration;
+
+    /**
+     * Поле для ввода пароля при регистрации.
+     */
+    @FXML
+    public PasswordField passwordForRegistration;
+
+    /**
+     * Поле для ввода никнейма при регистрации.
+     */
+    @FXML
+    public TextField nicknameForRegistration;
+
+    /**
      * Экземпляр доставщика сообщений с сервера.
      */
     private Messenger messenger;
@@ -77,6 +101,12 @@ public class ChatController implements Initializable {
     @FXML
     public void sendMessage() {
         String message = messageField.getText();
+
+        // Если сообщение пустое, завершаем работу метода.
+        if (message.isEmpty()) {
+            return;
+        }
+
         messageField.clear();
         try {
             messenger.sendMessage(message);
@@ -93,6 +123,13 @@ public class ChatController implements Initializable {
     public void tryToAuth() {
         String login = loginField.getText();
         String password = passwordField.getText();
+
+        // Если логин или пароль не заполнены, выводим сообщение и завершаем работу метода.
+        if (login.isEmpty() || password.isEmpty()) {
+            addMessage("Пожалуйста, заполните оба поля.");
+            return;
+        }
+
         passwordField.clear();
         try {
             messenger.tryToAuthorise(login, password);
@@ -152,5 +189,50 @@ public class ChatController implements Initializable {
      */
     public void resetMessenger() {
         messenger = new Messenger(this);
+    }
+
+    /**
+     * Метод отображает форму регистрации и скрывает форму авторизации.
+     */
+    @FXML
+    public void openRegisterForm() {
+        registerForm.setVisible(true);
+        registerForm.setManaged(true);
+        authForm.setVisible(false);
+        authForm.setManaged(false);
+        Platform.runLater(() -> messageArea.requestFocus());
+    }
+
+    /**
+     * Метод скрывает форму регистрации и отображает форму авторизации.
+     */
+    @FXML
+    public void closeRegisterForm() {
+        registerForm.setVisible(false);
+        registerForm.setManaged(false);
+        authForm.setVisible(true);
+        authForm.setManaged(true);
+    }
+
+    /**
+     * Попытка регистрации нового пользователя.
+     */
+    @FXML
+    public void tryToRegister() {
+        String login = loginForRegistration.getText();
+        String password = passwordForRegistration.getText();
+        String nickname = nicknameForRegistration.getText();
+
+        // Если какое-то из полей не заполнено, выводим сообщение и завершаем работу метода.
+        if (login.isEmpty() || password.isEmpty() || nickname.isEmpty()) {
+            addMessage("Пожалуйста, заполните все поля.");
+            return;
+        }
+
+        try {
+            messenger.tryToRegister(login, password, nickname);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

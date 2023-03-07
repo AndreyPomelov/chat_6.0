@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.VBox?>
 
 <!--Родительский контейнер для всего содержимого окна.
-    Содержит область вывода сообщений и два дочерних контейнера.-->
+    Содержит область вывода сообщений и три дочерних контейнера.-->
 <?import javafx.scene.control.PasswordField?>
 <VBox alignment="CENTER" spacing="20.0" xmlns:fx="http://javafx.com/fxml"
       fx:controller="com.example.client.ChatController">
@@ -16,12 +16,23 @@
         <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
     </padding>
 
-    <!--Дочерний контейнер. Содержит поля для ввода логина и пароля и кнопку для входа.
+    <!--Дочерний контейнер. Содержит поля для ввода логина и пароля и кнопки для входа и регистрации.
         Отображается только в том случае, если пользователь не авторизован.-->
     <HBox fx:id="authForm" spacing="20">
         <TextField fx:id="loginField" promptText="Введите логин" HBox.hgrow="ALWAYS"/>
         <PasswordField fx:id="passwordField" promptText="Введите пароль" HBox.hgrow="ALWAYS"/>
         <Button text="Войти" onAction="#tryToAuth"/>
+        <Button text="Регистрация" onAction="#openRegisterForm"/>
+    </HBox>
+
+    <!--Дочерний контейнер. Содержит поля для ввода логина, пароля, никнейма и кнопки Зарегистрироваться и Назад.
+        Отображается когда пользователь нажимает кнопку Регистрация.-->
+    <HBox fx:id="registerForm" spacing="20" visible="false" managed="false">
+        <TextField fx:id="loginForRegistration" promptText="Введите логин" HBox.hgrow="ALWAYS"/>
+        <PasswordField fx:id="passwordForRegistration" promptText="Введите пароль" HBox.hgrow="ALWAYS"/>
+        <TextField fx:id="nicknameForRegistration" promptText="Введите никнейм" HBox.hgrow="ALWAYS"/>
+        <Button text="Зарегистрироваться" onAction="#tryToRegister"/>
+        <Button text="Назад" onAction="#closeRegisterForm"/>
     </HBox>
 
     <!--Область вывода сообщений. Ввод текста в данную область запрещён.-->
