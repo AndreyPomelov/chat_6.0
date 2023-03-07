@@ -1,5 +1,7 @@
 package server.authentication;
 
+import server.exceptions.RegistrationFailedException;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,6 +46,42 @@ public class SimpleAuthService implements AuthService {
         // Если совпадений не обнаружено, возвращаем null.
         // Это говорит о том, что авторизация неуспешна.
         return null;
+    }
+
+    /**
+     * Зарегистрировать нового пользователя.
+     *
+     * @param login                         логин.
+     * @param password                      пароль.
+     * @param nickname                      никнейм.
+     * @throws RegistrationFailedException  ошибка регистрации нового пользователя.
+     */
+    @Override
+    public void registerNewUser(String login, String password, String nickname) throws RegistrationFailedException {
+        UserData user = new UserData(login, password, nickname);
+
+        // Если такой логин или никнейм уже существуют, выбрасываем исключение.
+        if (isLoginOrNicknameExists(user)) {
+            throw new RegistrationFailedException("Такой логин или никнейм уже существует.");
+        }
+
+        // Добавляем нового пользователя к списку пользователей.
+        users.add(user);
+    }
+
+    /**
+     * Метод проверяет, существует ли уже такой логин или никнейм.
+     *
+     * @param user  данные пользователя.
+     * @return      true, если логин или никнейм уже существует.
+     */
+    private boolean isLoginOrNicknameExists(UserData user) {
+        for (UserData currentUser : users) {
+            if (currentUser.login.equals(user.login) || currentUser.nickname.equals(user.nickname)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**

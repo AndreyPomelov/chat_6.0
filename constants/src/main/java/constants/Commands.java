@@ -27,4 +27,19 @@ public interface Commands {
      * Авторизация неуспешна.
      */
     String AUTH_DENIED = "/auth_denied";
+
+    /**
+     * Запрос регистрации нового пользователя.
+     */
+    String REG = "/reg";
+
+    /**
+     * Регистрация успешна.
+     */
+    String REG_OK = "/reg_ok";
+
+    /**
+     * Регистрация неуспешна.
+     */
+    String REG_FAIL = "/reg_fail";
 }
